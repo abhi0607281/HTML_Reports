@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenue YTD 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --plane:    #f4f6f5;
+    --surface:  #ffffff;
+    --sunk:     #edf0ee;
+    --ink:      #0f1416;
+    --ink-2:    #4a5356;
+    --ink-3:    #7d8689;
+    --rule:     #d8dedb;
+    --rule-soft:#e6eae7;
+    --actual:   #2a78d6;
+    --actual-2: #1c5cab;
+    --actual-w: #dce9fa;
+    --budget:   #8b9499;
+    --good:     #0ca30c;
+    --good-ink: #006300;
+    --bad:      #d03b3b;
+    --bad-ink:  #a82c2c;
+    --bad-w:    #fadfdf;
+    --warn:     #fab219;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane:    #0a0d0d;
+      --surface:  #171b1b;
+      --sunk:     #202525;
+      --ink:      #f4f7f6;
+      --ink-2:    #b7bfbd;
+      --ink-3:    #858e8c;
+      --rule:     #2c3232;
+      --rule-soft:#242929;
+      --actual:   #3987e5;
+      --actual-2: #86b6ef;
+      --actual-w: #16304f;
+      --budget:   #7c8688;
+      --good:     #0ca30c;
+      --good-ink: #46c246;
+      --bad:      #e66767;
+      --bad-ink:  #f0a3a3;
+      --bad-w:    #3d1f1f;
+      --warn:     #fab219;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plane:    #0a0d0d;
+    --surface:  #171b1b;
+    --sunk:     #202525;
+    --ink:      #f4f7f6;
+    --ink-2:    #b7bfbd;
+    --ink-3:    #858e8c;
+    --rule:     #2c3232;
+    --rule-soft:#242929;
+    --actual:   #3987e5;
+    --actual-2: #86b6ef;
+    --actual-w: #16304f;
+    --budget:   #7c8688;
+    --good:     #0ca30c;
+    --good-ink: #46c246;
+    --bad:      #e66767;
+    --bad-ink:  #f0a3a3;
+    --bad-w:    #3d1f1f;
+    --warn:     #fab219;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--plane); color: var(--ink);
+    font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; padding-block: 0 60px; }
+
+  /* masthead */
+  header { padding-block: 44px 24px; border-bottom: 1px solid var(--ink); }
+  .kicker {
+    font-family: "Roboto Mono", ui-monospace, monospace; font-size: 11px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 14px;
+  }
+  h1 {
+    font-family: "Newsreader", Georgia, serif; font-weight: 600;
+    font-size: clamp(32px, 5.4vw, 52px); letter-spacing: -.015em; line-height: 1.04;
+    margin: 0; text-wrap: balance;
+  }
+  .lede { margin: 16px 0 0; max-width: 62ch; color: var(--ink-2); font-size: 16px; }
+  .lede b { color: var(--ink); font-weight: 600; }
+  .stamps { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .stamp {
+    font-family: "Roboto Mono", monospace; font-size: 11.5px; padding: 4px 9px;
+    border-radius: 2px; background: var(--sunk); color: var(--ink-2); border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+  .stamp b { color: var(--ink); font-weight: 500; }
+  .stamp--bad { background: var(--bad-w); border-color: transparent; color: var(--bad-ink); }
+
+  section { margin-top: 46px; }
+  .head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  h2 { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 24px; letter-spacing: -.01em; margin: 0; }
+  .sub { color: var(--ink-3); font-size: 12.5px; }
+
+  /* KPI */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
+  .kpi { background: var(--surface); padding: 18px; display: flex; flex-direction: column; gap: 5px; }
+  .kpi-l { font-family: "Roboto Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .kpi-v { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 34px; letter-spacing: -.02em; line-height: 1; }
+  .kpi-v .u { font-family: "Figtree", sans-serif; font-size: 15px; font-weight: 600; color: var(--ink-2); }
+  .kpi-s { font-size: 12.5px; color: var(--ink-2); }
+  .kpi--bad .kpi-v { color: var(--bad-ink); }
+  .kpi--bad { box-shadow: inset 3px 0 0 var(--bad); }
+
+  .panel { background: var(--surface); border: 1px solid var(--rule-soft); padding: 22px; }
+  .chartbox { overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; min-width: 620px; }
+  .gl    { stroke: var(--rule-soft); stroke-width: 1; }
+  .gbase { stroke: var(--rule); stroke-width: 1; }
+  .tick  { fill: var(--ink-3); font-family: "Roboto Mono", monospace; font-size: 10px; }
+  .cat   { fill: var(--ink); font-family: "Figtree", sans-serif; font-size: 12px; font-weight: 500; }
+  .lab   { fill: var(--ink-2); font-family: "Roboto Mono", monospace; font-size: 10.5px; }
+  .labb  { fill: var(--bad-ink); font-family: "Roboto Mono", monospace; font-size: 10.5px; font-weight: 500; }
+  .abar  { fill: var(--actual); }
+  .bline { fill: none; stroke: var(--budget); stroke-width: 2; stroke-dasharray: 5 4; }
+  .bdot  { fill: var(--surface); stroke: var(--budget); stroke-width: 2; }
+
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+  .lg { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .sw { width: 14px; height: 10px; border-radius: 2px; flex: none; }
+  .sw-line { width: 18px; height: 0; border-top: 2px dashed var(--budget); }
+
+  /* bar list */
+  .barlist { display: flex; flex-direction: column; gap: 1px; }
+  .row { display: grid; grid-template-columns: 120px 1fr 96px 74px; align-items: center; gap: 12px; padding: 9px 0; }
+  .row:hover { background: var(--sunk); }
+  .row-n { font-size: 13.5px; font-weight: 500; }
+  .row-n span { display: block; font-family: "Roboto Mono", monospace; font-size: 10.5px; color: var(--ink-3); font-weight: 400; }
+  .track { position: relative; height: 18px; background: var(--rule-soft); border-radius: 2px; }
+  .fill  { position: absolute; inset: 0 auto 0 0; background: var(--actual); border-radius: 2px; min-width: 3px; }
+  .ghost { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--budget); }
+  .row-v { text-align: right; font-family: "Roboto Mono", monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .row-d { text-align: right; font-family: "Roboto Mono", monospace; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--bad-ink); }
+  .row-d.up { color: var(--good-ink); }
+  .row-d.na { color: var(--ink-3); }
+
+  /* table */
+  .tablebox { overflow-x: auto; border: 1px solid var(--rule-soft); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+  thead th {
+    text-align: right; font-family: "Roboto Mono", monospace; font-size: 10.5px;
+    letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); font-weight: 400;
+    padding: 12px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  thead th.l { text-align: left; }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); text-align: right;
+             font-family: "Roboto Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody td.l { text-align: left; font-family: "Figtree", sans-serif; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: var(--sunk); }
+  tfoot td { padding: 12px 14px; text-align: right; font-family: "Roboto Mono", monospace;
+             font-variant-numeric: tabular-nums; border-top: 1px solid var(--rule); font-weight: 500; }
+  tfoot td.l { text-align: left; font-family: "Figtree", sans-serif; }
+  .rk { color: var(--ink-3); font-size: 11px; }
+  .rgn { display: inline-block; font-family: "Roboto Mono", monospace; font-size: 10.5px;
+         color: var(--ink-2); background: var(--sunk); padding: 1px 6px; border-radius: 2px; }
+  .dn { color: var(--bad-ink); }
+  .up { color: var(--good-ink); }
+  .na { color: var(--ink-3); }
+
+  /* flags */
+  .flags { display: flex; flex-direction: column; gap: 1px; }
+  .flag { display: grid; grid-template-columns: 24px 1fr; gap: 14px; padding: 16px 20px;
+          background: var(--surface); border: 1px solid var(--rule-soft); align-items: start; }
+  .fi { font-family: "Roboto Mono", monospace; font-size: 12px; font-weight: 500; text-align: center;
+        line-height: 22px; border-radius: 2px; }
+  .fi-a { background: var(--bad); color: #fff; }
+  .fi-b { background: var(--warn); color: #0f1416; }
+  .fi-c { background: var(--budget); color: #fff; }
+  .flag h3 { margin: 0 0 5px; font-family: "Figtree", sans-serif; font-size: 14.5px; font-weight: 600; }
+  .flag p { margin: 0; color: var(--ink-2); font-size: 13.5px; max-width: 78ch; }
+  code { font-family: "Roboto Mono", monospace; font-size: 12px; background: var(--sunk); padding: 1px 4px; border-radius: 2px; }
+
+  .method { margin-top: 46px; padding-top: 24px; border-top: 1px solid var(--rule); color: var(--ink-2); font-size: 12.5px; }
+  .method h2 { font-size: 17px; margin-bottom: 12px; }
+  .method pre { font-family: "Roboto Mono", monospace; font-size: 11.5px; line-height: 1.7;
+                background: var(--surface); border: 1px solid var(--rule-soft); padding: 15px;
+                overflow-x: auto; margin: 0 0 14px; color: var(--ink); }
+  .method ul { margin: 0; padding-left: 18px; }
+  .method li { margin-bottom: 6px; }
+
+  :focus-visible { outline: 2px solid var(--actual); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) {
+    .kpis { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 92px 1fr 80px 62px; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Unispace · Monthly Business Review · Group revenue</p>
+    <h1>Revenue is running $46.7m behind budget</h1>
+    <p class="lede">Through eight closed months of 2026 the group booked <b>$185.3m</b> against a budget of <b>$231.9m</b>. Every region is short. Almost all of the gap opened after April, when the budget curve steps up and actual revenue does not follow.</p>
+    <div class="stamps">
+      <span class="stamp stamp--bad">◆ Variance <b>−20.1%</b></span>
+      <span class="stamp">Period <b>Jan – Aug 2026</b></span>
+      <span class="stamp">Currency <b>USD, FX-converted</b></span>
+      <span class="stamp">Model <b>Monthly Business Review</b></span>
+      <span class="stamp">Sep 2026 <b>excluded — open</b></span>
+    </div>
+  </header>
+
+  <section aria-label="Headline figures">
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi-l">Revenue</span>
+        <span class="kpi-v">185.3<span class="u">m</span></span>
+        <span class="kpi-s">eight closed months</span>
+      </div>
+      <div class="kpi kpi--bad">
+        <span class="kpi-l">Vs budget</span>
+        <span class="kpi-v">−46.7<span class="u">m</span></span>
+        <span class="kpi-s">−20.1% against $231.9m</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-l">Gross profit</span>
+        <span class="kpi-v">19.8<span class="u">%</span></span>
+        <span class="kpi-s">$36.7m GP</span>
+      </div>
+      <div class="kpi kpi--bad">
+        <span class="kpi-l">EBITDA</span>
+        <span class="kpi-v">−8.2<span class="u">m</span></span>
+        <span class="kpi-s">−4.4% margin</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <div class="head">
+        <h2>The gap opens in May</h2>
+        <span class="sub">monthly revenue, USD millions</span>
+      </div>
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:var(--actual)"></span>Actual revenue</span>
+        <span class="lg"><span class="sw sw-line"></span>Budget</span>
+      </div>
+      <div class="chartbox">
+        <svg viewBox="0 0 760 292" role="img" aria-label="Monthly revenue against budget, January to August 2026, USD millions. Actual: Jan 20.5, Feb 21.4, Mar 20.1, Apr 22.4, May 24.7, Jun 26.4, Jul 27.7, Aug 22.0. Budget: Jan 19.0, Feb 17.7, Mar 18.8, Apr 17.8, May 27.2, Jun 34.8, Jul 45.5, Aug 51.1. Actual runs at or above budget through April, then falls progressively further behind as budget steps up.">
+          <line class="gl" x1="56" y1="57.3"  x2="744" y2="57.3"></line>
+          <line class="gl" x1="56" y1="91.8"  x2="744" y2="91.8"></line>
+          <line class="gl" x1="56" y1="126.4" x2="744" y2="126.4"></line>
+          <line class="gl" x1="56" y1="160.9" x2="744" y2="160.9"></line>
+          <line class="gl" x1="56" y1="195.5" x2="744" y2="195.5"></line>
+          <line class="gbase" x1="56" y1="230" x2="744" y2="230"></line>
+          <text class="tick" x="48" y="60.8"  text-anchor="end">50</text>
+          <text class="tick" x="48" y="95.3"  text-anchor="end">40</text>
+          <text class="tick" x="48" y="129.9" text-anchor="end">30</text>
+          <text class="tick" x="48" y="164.4" text-anchor="end">20</text>
+          <text class="tick" x="48" y="199.0" text-anchor="end">10</text>
+          <text class="tick" x="48" y="233.5" text-anchor="end">0</text>
+
+          <rect class="abar" x="79"  y="159.1" width="40" height="70.9" rx="3"></rect>
+          <rect class="abar" x="165" y="156.0" width="40" height="74.0" rx="3"></rect>
+          <rect class="abar" x="251" y="160.7" width="40" height="69.3" rx="3"></rect>
+          <rect class="abar" x="337" y="152.5" width="40" height="77.5" rx="3"></rect>
+          <rect class="abar" x="423" y="144.7" width="40" height="85.3" rx="3"></rect>
+          <rect class="abar" x="509" y="138.8" width="40" height="91.2" rx="3"></rect>
+          <rect class="abar" x="595" y="134.2" width="40" height="95.8" rx="3"></rect>
+          <rect class="abar" x="681" y="153.9" width="40" height="76.1" rx="3"></rect>
+
+          <polyline class="bline" points="99,164.4 185,168.8 271,165.2 357,168.6 443,135.9 529,109.7 615,72.9 701,53.4"></polyline>
+          <circle class="bdot" cx="99"  cy="164.4" r="4"></circle>
+          <circle class="bdot" cx="185" cy="168.8" r="4"></circle>
+          <circle class="bdot" cx="271" cy="165.2" r="4"></circle>
+          <circle class="bdot" cx="357" cy="168.6" r="4"></circle>
+          <circle class="bdot" cx="443" cy="135.9" r="4"></circle>
+          <circle class="bdot" cx="529" cy="109.7" r="4"></circle>
+          <circle class="bdot" cx="615" cy="72.9"  r="4"></circle>
+          <circle class="bdot" cx="701" cy="53.4"  r="4"></circle>
+
+          <text class="lab"  x="99"  y="152" text-anchor="middle">20.5</text>
+          <text class="lab"  x="615" y="127" text-anchor="middle">27.7</text>
+          <text class="labb" x="701" y="45"  text-anchor="middle">budget 51.1</text>
+          <text class="labb" x="701" y="147" text-anchor="middle">22.0</text>
+
+          <text class="cat" x="99"  y="250" text-anchor="middle">Jan</text>
+          <text class="cat" x="185" y="250" text-anchor="middle">Feb</text>
+          <text class="cat" x="271" y="250" text-anchor="middle">Mar</text>
+          <text class="cat" x="357" y="250" text-anchor="middle">Apr</text>
+          <text class="cat" x="443" y="250" text-anchor="middle">May</text>
+          <text class="cat" x="529" y="250" text-anchor="middle">Jun</text>
+          <text class="cat" x="615" y="250" text-anchor="middle">Jul</text>
+          <text class="cat" x="701" y="250" text-anchor="middle">Aug</text>
+
+          <text class="lab" x="56" y="272">Apr and earlier: actual at or above budget</text>
+          <text class="labb" x="744" y="272" text-anchor="end">Aug: −29.1m in one month</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <div class="head">
+        <h2>Region</h2>
+        <span class="sub">bar = actual revenue · marker = budget · USD millions</span>
+      </div>
+      <div class="barlist" id="regions"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Margin by region</h2>
+      <span class="sub">GP and EBITDA on actual revenue, Jan – Aug 2026</span>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead>
+          <tr>
+            <th class="l">Region</th>
+            <th>Revenue</th>
+            <th>Budget</th>
+            <th>Variance</th>
+            <th>Var %</th>
+            <th>GP</th>
+            <th>GP %</th>
+            <th>EBITDA</th>
+            <th>EBITDA %</th>
+          </tr>
+        </thead>
+        <tbody id="regionTable"></tbody>
+        <tfoot>
+          <tr>
+            <td class="l">Group</td>
+            <td>185.3</td>
+            <td>231.9</td>
+            <td class="dn">−46.7</td>
+            <td class="dn">−20.1%</td>
+            <td>36.7</td>
+            <td>19.8%</td>
+            <td class="dn">−8.2</td>
+            <td class="dn">−4.4%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Top 15 studios</h2>
+      <span class="sub">by revenue · covers 99.6% of group revenue across 25 reporting studios</span>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead>
+          <tr>
+            <th class="l">#</th>
+            <th class="l">Studio</th>
+            <th class="l">Region</th>
+            <th>Revenue</th>
+            <th>Budget</th>
+            <th>Var %</th>
+            <th>GP</th>
+            <th>GP %</th>
+          </tr>
+        </thead>
+        <tbody id="studioTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Four things to check before this goes out</h2>
+      <span class="sub">issues in the data, not in the trading</span>
+    </div>
+    <div class="flags">
+      <div class="flag">
+        <span class="fi fi-a">1</span>
+        <div>
+          <h3>September is open and its numbers are not usable</h3>
+          <p>The Sep 2026 rows report group revenue of $6.0m against gross profit of $11.4m — GP above revenue, which cannot happen. ANZ and Bulb both show <em>negative</em> revenue for the month, and EMEA and Asia both show GP exceeding revenue. This is a mid-close state, so the whole month is excluded here. Anything quoting a nine-month YTD from this model right now is wrong.</p>
+        </div>
+      </div>
+      <div class="flag">
+        <span class="fi fi-b">2</span>
+        <div>
+          <h3>The budget curve nearly triples across the year</h3>
+          <p>Monthly budget runs $17.7m–$19.0m from January to April, then steps to $27.2m, $34.8m, $45.5m and $51.1m. Actual revenue grew steadily over the same stretch — $20.5m to $27.7m — so the shortfall is almost entirely phasing, not a collapse in trading. Worth confirming the back-half budget was loaded at the right grain before the variance is presented as a performance miss.</p>
+        </div>
+      </div>
+      <div class="flag">
+        <span class="fi fi-c">3</span>
+        <div>
+          <h3>Group EBITDA is carrying $12.1m of unallocated cost</h3>
+          <p>The <code>Global</code> region has zero revenue and −$12.1m of EBITDA for the period — corporate overhead that sits outside every regional line. It is the reason group EBITDA is −$8.2m while ANZ (+$6.0m) and Downstream (+$4.0m) are both positive. The regional EBITDA percentages in the table above are therefore pre-allocation.</p>
+        </div>
+      </div>
+      <div class="flag">
+        <span class="fi fi-c">4</span>
+        <div>
+          <h3>Six studios have no budget loaded at all</h3>
+          <p>Life Science UK, Life Science CH, London, Milan, Downstream US and Downstream AMS carry $39.0m of actual revenue between them against a budget of zero, so their variance reads as pure upside. Separately, <code>Medical</code> holds a budget of −$33.3m with no revenue, which nets against the group budget. Both distort the variance total.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="method">
+    <h2>How this was built</h2>
+    <pre>Semantic model  Monthly Business Review  ·  workspace: BI for AI
+Table           Income_Stat
+Revenue         [Total_Revenue]        = CALCULATE( SUMX( Income_Stat,
+                                          [Revenue] * [Conversation] ),
+                                          [TimePeriod] = "MTD" )
+Budget          [Total_Revenue_budget] — same shape on [RevenueBudget]
+Period          AsAtMonth in Jan–Aug 2026 (Sep excluded, see flag 1)</pre>
+    <ul>
+      <li>The raw <code>Revenue</code> column is in each entity's local currency — INR, AUD, EUR, GBP and so on — so it cannot be summed across regions. <code>Conversation</code> is the FX factor to USD, and the model's own measures apply it. Every figure here is USD.</li>
+      <li><code>TimePeriod</code> holds MTD, QTD and YTD copies of the same rows. The measures filter to MTD; summing the column without that filter triple-counts.</li>
+      <li>Region uses <code>New_Region</code>. Studio uses <code>Studio_Location</code> — the <code>Studio</code> column reads "Local" for every row and is not a usable grain.</li>
+      <li>GP% and EBITDA% are calculated on actual revenue for the period, not taken from the model's stored margin columns.</li>
+      <li>Rounding is applied at display only; totals are summed from unrounded values, so a column may differ from its printed parts by 0.1.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var regions = [
+    { name: "ANZ",        rev: 53.57, bud: 70.54, gp: 13.65, gpp: 25.49, eb:  6.04, ebp:  11.28 },
+    { name: "Americas",   rev: 46.18, bud: 72.64, gp:  8.72, gpp: 18.88, eb: -0.40, ebp:  -0.86 },
+    { name: "EMEA",       rev: 44.64, bud: 65.99, gp:  5.22, gpp: 11.71, eb: -4.50, ebp: -10.09 },
+    { name: "Bulb",       rev: 16.95, bud: 30.30, gp:  0.57, gpp:  3.39, eb: -0.44, ebp:  -2.60 },
+    { name: "Asia",       rev: 15.10, bud: 25.76, gp:  3.03, gpp: 20.05, eb: -0.78, ebp:  -5.18 },
+    { name: "Downstream", rev:  8.83, bud:  0.00, gp:  5.45, gpp: 61.75, eb:  4.03, ebp:  45.70 }
+  ];
+
+  var studios = [
+    ["New York",        "Americas",   42.96, 57.41,  6.74,  15.69],
+    ["Sydney",          "ANZ",        18.66, 16.61,  3.93,  21.04],
+    ["Reading",         "Bulb",       16.95, 30.30,  0.57,   3.39],
+    ["Auckland",        "ANZ",        12.75, 12.94,  4.59,  36.00],
+    ["India",           "Asia",        9.10, 16.65,  1.66,  18.26],
+    ["Brisbane",        "ANZ",         8.96, 10.02,  3.27,  36.52],
+    ["Melbourne",       "ANZ",         8.57, 11.95,  2.53,  29.53],
+    ["France",          "EMEA",        8.36, 15.98,  1.31,  15.66],
+    ["Life Science UK", "EMEA",        8.32,  0.00,  0.63,   7.62],
+    ["London",          "EMEA",        7.18,  0.00, -1.76, -24.55],
+    ["Downstream US",   "Downstream",  6.63,  0.00,  3.87,  58.37],
+    ["Ireland",         "EMEA",        6.05,  7.12,  1.40,  23.08],
+    ["Life Science CH", "EMEA",        5.28,  0.00,  1.40,  26.57],
+    ["Singapore",       "Asia",        5.12,  6.71,  0.98,  19.06],
+    ["Switzerland",     "EMEA",        4.98, 13.03,  0.66,  13.28]
+  ];
+
+  var n1 = function (v) { return (v < 0 ? "−" : "") + Math.abs(v).toFixed(1); };
+  var pc = function (v) { return (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"; };
+
+  var maxScale = 75;
+  document.getElementById("regions").innerHTML = regions.map(function (r) {
+    var varp = r.bud ? ((r.rev - r.bud) / r.bud * 100) : null;
+    var cls = varp === null ? "na" : (varp < 0 ? "" : "up");
+    return '<div class="row">'
+      + '<div class="row-n">' + r.name + '<span>' + n1(r.gp) + 'm GP</span></div>'
+      + '<div class="track">'
+      +   '<div class="fill" style="width:' + (r.rev / maxScale * 100).toFixed(2) + '%"></div>'
+      +   (r.bud ? '<div class="ghost" style="left:' + (r.bud / maxScale * 100).toFixed(2) + '%"></div>' : '')
+      + '</div>'
+      + '<div class="row-v">' + n1(r.rev) + '</div>'
+      + '<div class="row-d ' + cls + '">' + (varp === null ? "no bud." : pc(varp)) + '</div>'
+      + '</div>';
+  }).join("");
+
+  document.getElementById("regionTable").innerHTML = regions.map(function (r) {
+    var v = r.rev - r.bud;
+    var varp = r.bud ? (v / r.bud * 100) : null;
+    return '<tr>'
+      + '<td class="l">' + r.name + '</td>'
+      + '<td>' + n1(r.rev) + '</td>'
+      + '<td>' + (r.bud ? n1(r.bud) : '<span class="na">—</span>') + '</td>'
+      + '<td class="' + (v < 0 ? "dn" : "up") + '">' + n1(v) + '</td>'
+      + '<td class="' + (varp === null ? "na" : (varp < 0 ? "dn" : "up")) + '">' + (varp === null ? "—" : pc(varp)) + '</td>'
+      + '<td>' + n1(r.gp) + '</td>'
+      + '<td>' + pc(r.gpp) + '</td>'
+      + '<td class="' + (r.eb < 0 ? "dn" : "up") + '">' + n1(r.eb) + '</td>'
+      + '<td class="' + (r.ebp < 0 ? "dn" : "up") + '">' + pc(r.ebp) + '</td>'
+      + '</tr>';
+  }).join("");
+
+  document.getElementById("studioTable").innerHTML = studios.map(function (s, i) {
+    var varp = s[3] ? ((s[2] - s[3]) / s[3] * 100) : null;
+    return '<tr>'
+      + '<td class="l rk">' + String(i + 1).padStart(2, "0") + '</td>'
+      + '<td class="l">' + s[0] + '</td>'
+      + '<td class="l"><span class="rgn">' + s[1] + '</span></td>'
+      + '<td>' + n1(s[2]) + '</td>'
+      + '<td>' + (s[3] ? n1(s[3]) : '<span class="na">—</span>') + '</td>'
+      + '<td class="' + (varp === null ? "na" : (varp < 0 ? "dn" : "up")) + '">' + (varp === null ? "no bud." : pc(varp)) + '</td>'
+      + '<td class="' + (s[4] < 0 ? "dn" : "") + '">' + n1(s[4]) + '</td>'
+      + '<td class="' + (s[5] < 0 ? "dn" : "") + '">' + pc(s[5]) + '</td>'
+      + '</tr>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
