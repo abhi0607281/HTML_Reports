@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly Business Review · Reports</title>
+<meta name="description" content="Unispace Monthly Business Review reports — pick a report to view it, use the back link to return to the list.">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f5f5f3; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e4e3df; --line-2:#d3d2cd;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#8a8985; --accent:#2a78d6;
+  --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04);
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#111110;--surface:#1a1a19;--surface-2:#232322;--line:#2c2c2a;--line-2:#3a3a37;--ink:#fff;--ink-2:#c3c2b7;--ink-3:#8f8e88;--accent:#3987e5;--shadow:none}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#111110;--surface:#1a1a19;--surface-2:#232322;--line:#2c2c2a;--line-2:#3a3a37;--ink:#fff;--ink-2:#c3c2b7;--ink-3:#8f8e88;--accent:#3987e5;--shadow:none}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+
+/* ---- list view ---- */
+.wrap{max-width:860px;margin:0 auto;padding:44px 20px 64px;width:100%}
+.eyebrow{font-size:13px;letter-spacing:.02em;color:var(--ink-2);display:flex;gap:8px;align-items:center}
+.eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-3)}
+h1{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.02em;margin:8px 0 6px;font-weight:650}
+.lead{color:var(--ink-2);margin:0 0 26px;max-width:60ch}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cards{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+.card{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px 16px;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:border-color .12s,transform .12s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card .tag{font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.card b{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.card p{margin:0;color:var(--ink-2);font-size:14px}
+.card .meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+.card .meta span:last-child{color:var(--accent);font-weight:500}
+.empty{color:var(--ink-3);padding:30px 0}
+footer{margin-top:40px;font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.theme{background:none;border:1px solid var(--line-2);border-radius:8px;padding:4px 10px;font:inherit;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+
+/* ---- viewer ---- */
+#viewer{display:none;flex-direction:column;flex:1;min-height:100vh}
+body.viewing #list{display:none}
+body.viewing #viewer{display:flex}
+.bar{display:flex;align-items:center;gap:14px;padding:0 16px;height:48px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+.bar .back{display:inline-flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:600;font-size:14px;padding:6px 8px;border-radius:8px}
+.bar .back:hover{background:var(--surface-2)}
+.bar .title{font-size:14px;color:var(--ink);font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .title span{color:var(--ink-3);font-weight:400}
+.bar .open{font-size:13px;color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.bar .open:hover{color:var(--accent)}
+.bar nav{display:flex;gap:4px}
+.bar nav a{font-size:13px;color:var(--ink-2);text-decoration:none;padding:5px 9px;border-radius:6px;white-space:nowrap}
+.bar nav a:hover{background:var(--surface-2)}
+.bar nav a[aria-current="page"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+@media (max-width:720px){.bar nav,.bar .open{display:none}}
+iframe{flex:1;width:100%;border:0;background:var(--bg);min-height:calc(100vh - 48px)}
+</style>
+</head>
+<body>
+
+<div id="list">
+  <div class="wrap">
+    <div class="eyebrow"><span>Unispace</span><span class="dot"></span><span>Monthly Business Review</span></div>
+    <h1>Reports</h1>
+    <p class="lead">Interactive HTML reports built from the Monthly Business Review model. Pick a report to open it; use “All reports” at the top of any report to come back here.</p>
+    <div class="filters" id="filters" role="group" aria-label="Filter by area"></div>
+    <div class="cards" id="cards"></div>
+    <footer><span>Unispace · Monthly Business Review</span><button class="theme" id="theme">Toggle dark mode</button></footer>
+  </div>
+</div>
+
+<div id="viewer">
+  <div class="bar">
+    <a class="back" href="#" id="back">← All reports</a>
+    <div class="title" id="vtitle"></div>
+    <nav id="vnav" aria-label="Other reports"></nav>
+    <a class="open" id="vopen" href="#" target="_blank" rel="noopener">Open full page ↗</a>
+  </div>
+  <iframe id="frame" title="Report"></iframe>
+</div>
+
+<script>
+// Add a report: one entry here, plus the HTML file in this folder.
+const REPORTS = [
+  {
+    id: 'safety-sep-2026',
+    file: 'safety-sep-2026.html',
+    area: 'Safety',
+    title: 'Safety — 12 months to September 2026',
+    blurb: 'Rolling 12-month TRIFR / LTIFR, injuries, near misses and hours. Drill by region, country, studio and project.',
+    period: 'Sep 2026'
+  },
+  {
+    id: 'revenue-ytd-2026',
+    file: 'revenue-ytd-2026.html',
+    area: 'Finance',
+    title: 'Revenue YTD 2026',
+    blurb: 'Group revenue against budget by month, region and studio, with margin by region and top studios.',
+    period: 'Aug 2026 YTD'
+  }
+];
+
+const $ = id => document.getElementById(id);
+let area = 'All';
+
+function renderList(){
+  const areas = ['All', ...new Set(REPORTS.map(r => r.area))];
+  const f = $('filters'); f.innerHTML = '';
+  areas.forEach(a => { const b = document.createElement('button'); b.className = 'chip'; b.textContent = a; b.setAttribute('aria-pressed', a === area); b.addEventListener('click', () => { area = a; renderList(); }); f.appendChild(b); });
+  const c = $('cards'); c.innerHTML = '';
+  const rows = REPORTS.filter(r => area === 'All' || r.area === area);
+  if (!rows.length) { c.innerHTML = '<div class="empty">No reports in this area yet.</div>'; return; }
+  rows.forEach(r => {
+    const a = document.createElement('a'); a.className = 'card'; a.href = '#' + r.id;
+    const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = r.area;
+    const b = document.createElement('b'); b.textContent = r.title;
+    const p = document.createElement('p'); p.textContent = r.blurb;
+    const m = document.createElement('div'); m.className = 'meta';
+    const s1 = document.createElement('span'); s1.textContent = 'Period: ' + r.period;
+    const s2 = document.createElement('span'); s2.textContent = 'View report →';
+    m.append(s1, s2); a.append(tag, b, p, m); c.appendChild(a);
+  });
+}
+
+function route(){
+  const id = location.hash.replace('#', '');
+  const r = REPORTS.find(x => x.id === id);
+  if (!r) { document.body.classList.remove('viewing'); $('frame').removeAttribute('src'); document.title = 'Monthly Business Review · Reports'; renderList(); return; }
+  document.body.classList.add('viewing');
+  $('vtitle').innerHTML = ''; const t = document.createTextNode(r.title); const s = document.createElement('span'); s.textContent = ' · ' + r.area; $('vtitle').append(t, s);
+  $('vopen').href = r.file;
+  const nav = $('vnav'); nav.innerHTML = '';
+  REPORTS.forEach(x => { const a = document.createElement('a'); a.href = '#' + x.id; a.textContent = x.area; if (x.id === r.id) a.setAttribute('aria-current', 'page'); nav.appendChild(a); });
+  if ($('frame').getAttribute('src') !== r.file) $('frame').src = r.file;
+  document.title = r.title + ' · Monthly Business Review';
+  window.scrollTo(0, 0);
+}
+
+$('back').addEventListener('click', e => { e.preventDefault(); location.hash = ''; });
+$('theme').addEventListener('click', () => { const h = document.documentElement; const dark = h.getAttribute('data-theme') === 'dark' || (!h.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches); h.setAttribute('data-theme', dark ? 'light' : 'dark'); });
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
